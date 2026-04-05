@@ -174,30 +174,7 @@ $nproducts = $cartrepo->findNProductsById(intval($_COOKIE["user_id"]));
         unset($_SESSION["wrongpwd"]);
         ?>
     <!-- </div> -->
-    <!-- <div class="form-outline mb-3" style="width: 100%; max-width: 22rem"> -->
-        <label class="form-label" for="phone" style="margin: 0; display: inline-block; float: left;"><b>* Phone Number</b></label>    
-        <input type="text" id="phone" class="form-control" placeholder="+216 ********" data-mdb-input-mask="+216 999-999-999" 
-        value="<?php if((!isset($_SESSION['allok']))&&(isset($_SESSION["correcttel"]))) {echo $_SESSION["correcttel"];unset($_SESSION["correcttel"]);}?>" name="tel">
-        
-        
-        <?php
-          if(isset($_SESSION["invalidtelerror"])){
-            ?>
-             <p class="text-danger" style="margin-bottom: -1px;margin-top: -5px;"> <?= $_SESSION["invalidtelerror"] ?></p>
-        
-          <?php
-        
-        unset($_SESSION["invalidtelerror"]);
-        unset($_SESSION["wrongtel"]);
-      }
-      if(isset($_SESSION["teltaken"])){
-        ?>
-        <p class="text-danger" style="margin-bottom: -1px;margin-top: -5px;">Phone number taken.</p>
-      <?php 
-      unset($_SESSION["teltaken"]);
-    }
-      ?>
-      ?>
+
     <!-- </div>
 
     

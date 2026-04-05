@@ -5,18 +5,47 @@ include "isConnected.php";
 include_once './CommandeRepo.php';
 include_once './CartRepository.php';
 include_once './UserRepository.php';
+include_once './ProductRepository.php';
+include_once './CnxDB.php';
+
 $userrepo=new UserRepository();
 $usermail=$userrepo->findUserEmailById($_COOKIE["user_id"]);
 $commanrepo= new CommandeRepository();
 $cartrepo = new CartRepository();
+$prodrepo = new ProductRepository();
 $price=$_COOKIE['totalfinal'];
-$cartrepo->delete($_COOKIE["user_id"]);
+
+// Get cart items before deleting
+$usercart = $cartrepo->findCartById($_COOKIE["user_id"]);
+
+// Create the order
 $commandeinfo=array(
     'users_id'=>$_COOKIE["user_id"],
     'commande_date'=>date("Y-m-d"),
     'price'=>$price
     );
 $commanrepo->create($commandeinfo);
+
+// Get the last inserted order ID
+$db = CnxDB::getInstance();
+$lastOrderId = $db->lastInsertId();
+
+// Save cart items to commande_item
+if (is_array($usercart) && count($usercart) > 0) {
+    foreach ($usercart as $product_id) {
+        $product = $prodrepo->findProductById($product_id);
+        if ($product) {
+            $stmt = $db->prepare("INSERT INTO commande_item (commande_id, product_id, product_name, product_price) VALUES (?, ?, ?, ?)");
+            $stmt->execute(array($lastOrderId, $product_id, $product['product_name'], $product['product_price']));
+        }
+    }
+}
+
+// Store order ID in session for billing page
+$_SESSION['order_id'] = $lastOrderId;
+
+// Delete the cart
+$cartrepo->delete($_COOKIE["user_id"]);
 
 
 
@@ -74,13 +103,13 @@ if (isset($checkoutsubmit)) {
     try {
         $mail->send();
         echo "<script>alert('Email sent successfully !')</script>";
-        echo "<script>window.location.href='./home.php';</script>";
+        echo "<script>window.location.href='./billing.php?order_id=" . $_SESSION['order_id'] . "';</script>";
     } catch (Exception $e) {
         echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
     }
 
 }
-header("Location: ./home.php");
+header("Location: ./billing.php?order_id=" . $_SESSION['order_id']);
 //http://localhost:3306/coffee-shop-website-wassim-khelifa-patch-1
 exit;
 

@@ -15,7 +15,7 @@ $usercart = $cartrepo->findCartById($_COOKIE["user_id"]);
     'product_id'=>$product
     );
     $cartrepo->create($cartinfo);
-    header("Location: ./products-page-2.php");
+    header("Location: ./Products-Page-2.php");
     exit;
 }
 

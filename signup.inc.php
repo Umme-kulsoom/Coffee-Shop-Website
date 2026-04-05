@@ -11,7 +11,6 @@ if(isset($_POST["submit"]))
     $pwd=$_POST["pwd"];
     $pwdRepeat=$_POST["pwdrepeat"];
     $email=$_POST["email"];
-    $tel=$_POST["tel"];
     //$city=$_POST["city"];
     $address=$_POST["address"];
 
@@ -22,7 +21,7 @@ if(isset($_POST["submit"]))
     include "./sign-contr.classes.php";
     
 
-    $signup= new SignupContr($uid, $pwd, $pwdRepeat, $email,$tel/* ,$city */,$address);
+    $signup= new SignupContr($uid, $pwd, $pwdRepeat, $email/* ,$city */,$address);
 
     // Error Handling
        $signup->signupUser();

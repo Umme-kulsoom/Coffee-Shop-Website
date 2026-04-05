@@ -7,17 +7,15 @@ class SignupContr extends SignUp{
     private $pwd;
     private $pwdRepeat;
     private $email;
-    private $tel;
     //private $city;
     private $address;
 
-    public function __construct($uid, $pwd, $pwdRepeat, $email,$tel/* ,$city */,$address) {
+    public function __construct($uid, $pwd, $pwdRepeat, $email/* ,$city */,$address) {
 
         $this->uid=$uid;
         $this->pwd=$pwd;
         $this->pwdRepeat=$pwdRepeat;
         $this->email=$email;
-        $this->tel=$tel;
        //$this->city=$city;
         $this->address=$address;
     }
@@ -26,7 +24,7 @@ class SignupContr extends SignUp{
     
     private function emptyInput(){
         $result=true;
-        if((empty($this->uid))||(empty($this->pwd))||(empty($this->pwdRepeat))||(empty($this->email))||(empty($this->tel))){
+        if((empty($this->uid))||(empty($this->pwd))||(empty($this->pwdRepeat))||(empty($this->email))){
             $result=false;
         }
         return $result;
@@ -93,26 +91,6 @@ class SignupContr extends SignUp{
         return $result;
     }
 
-    private function telTakenCheck(){
-        $result=false;
-        if(!($this->checkTel($this->tel))){
-            $result=false;
-        } else {
-            $result=true;
-        }
-        return $result;
-    }
-
-    private function invalidTel(){
-        $result=false;
-        if(!preg_match('/^[0-9]{8}+$/',$this->tel)){
-            $result=false;
-        } else {
-            $result=true;
-        }
-        return $result;
-    }
-
     private function invalidAddress(){
         $result=false;
         if(!preg_match("/[a-zA-Z0-9]*$/",$this->address)){
@@ -158,19 +136,6 @@ class SignupContr extends SignUp{
             if($this->invalidEmail() == true) {
                 $_SESSION["correctemail"]=$this->email;
             }
-
-
-            if($this->invalidTel() == false) {
-                //echo "invalid Tel !"
-                $_SESSION["invalidtelerror"]="Invalid Phone Number";
-                $_SESSION["wrongtel"]=$this->tel;
-                header("Location: ./signup.php?error=tel");
-                exit();
-            } 
-            
-                if($this->invalidTel() == true) {
-                $_SESSION["correcttel"]=$this->tel;
-                }
 
                 if($this->invalidAddress() == false) {
                     //echo "invalid Address !"
@@ -226,28 +191,20 @@ class SignupContr extends SignUp{
             exit();
         }
 
-        if($this->telTakenCheck() == false) {
-            //echo "uidTaken!"
-            //$_SESSION["uidtakenerror"]="UID Taken";
-            $_SESSION["teltaken"]=$this->tel;
-            header("Location: ./signup.php?error=teltaken");
-            exit();
-        }
-
             /* if($this->uidTakenCheck() == true) {
                 $_SESSION["correctuidtakencheck"]=$this->uid;
                 $_SESSION["correctemailtakencheck"]=$this->email;
                 $_SESSION["correctteltakencheck"]=$this->tel;
             } */
             
-            if(($this->emptyInput() == true)&&($this->invalidUid() == true)&&($this->invalidEmail() == true)&&($this->invalidTel() == true)&&($this->invalidAddress() == true)&&($this->pwdMatch() == true)&&($this->uidTakenCheck() == true)){
+            if(($this->emptyInput() == true)&&($this->invalidUid() == true)&&($this->invalidEmail() == true)&&($this->invalidAddress() == true)&&($this->pwdMatch() == true)&&($this->uidTakenCheck() == true)){
                 $_SESSION["allok"]="allok";
             }
         
 
 
 
-        $this->setUser($this->uid,$this->pwd,$this->email,$this->tel/* ,$this->city */,$this->address);
+        $this->setUser($this->uid,$this->pwd,$this->email/* ,$this->city */,$this->address);
     }
 
 }
